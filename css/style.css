@@ -1,0 +1,30 @@
+.tabelle th, .tabelle td {
+    border-style: solid;
+    border-width: 1.5px;
+    width: 300px;
+    text-align: center;
+
+}
+.tabelle headerFixed {
+    position: fixed;
+}
+#tabellenDiv {
+    height: 500px;
+    overflow-y: scroll;
+}
+.spalte1 {
+    width: 25px !important;
+}
+
+.eingabefeld {
+    resize: none;
+}
+
+.imagebutton, .delbutton {
+    width: 18px;
+    height: 18px;
+}
+
+body {
+    background-color: green;
+}
