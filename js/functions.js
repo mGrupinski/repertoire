@@ -37,6 +37,9 @@ $(function () {
         del(this);
 
     });
+    $('#upbutton').on('click', function() {
+       $('#tabellenDiv').slideToggle(1000); 
+    });
     function del(delbutton) {
         var id = $(delbutton).attr('data-id');
         var rowid = delbutton.parentNode.parentNode.rowIndex;
