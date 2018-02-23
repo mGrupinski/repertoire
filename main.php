@@ -22,14 +22,34 @@ class Main {
                 "<html>" . self::getHTMLHead() .
                 "<body>" . self::getHeaderPicture() .
                 self::getTableHeader() .
-                "<div id='tabellenDiv'><table class='tabelle' id='Table_Songlist'>" .
+                self::getEingabeformular() .
+                "<div id='youtubeplayerDiv'></div>" .
+                "<div id='tabellenDiv'>" .
+                "<table class='tabelle' id='Table_Songlist'>" .
                 self::getTableContentFromDB() .
                 "</table>" .
                 "</div>" .
-                self::getEingabeformular() .
                 self::getSongtext() .
                 "</body>" .
                 "</html>";
+    }
+
+    static function getYoutubeplayer($link) {
+        $contents = str_replace("{youtubelink}", $link, file_get_contents("html/youtubeplayer.html"));
+        $contents = str_replace("watch?v=", "embed/", $contents);
+        return $contents;
+    }
+
+    static function getAudioplayer($id, $interpret, $songtitel) {
+        if (!file_exists("src/mp3/$interpret - $songtitel.mp3")) {
+            return "";
+        }
+        $contents = file_get_contents("html/audioplayer.html");
+        $contents = str_replace("{id}", $id, $contents);
+        $contents = str_replace("{interpret}", $interpret, $contents);
+        $contents = str_replace("{songtitel}", $songtitel, $contents);
+
+        return $contents;
     }
 
     static function getDatenbank() {
@@ -58,13 +78,14 @@ class Main {
             $interpret = $song->getInterpret();
             $songtitel = $song->getTitel();
             $statusbar = "coming soon";
-            $utilbar = "coming soon";
+            $utilbar = self::getUtilbar($id);
             $contents = file_get_contents("html/main_table_row_template.html");
             $contents = str_replace("{id}", $id, $contents);
             $contents = str_replace("{Interpret}", $interpret, $contents);
             $contents = str_replace("{Songtitel}", $songtitel, $contents);
             $contents = str_replace("{Statusbar}", $statusbar, $contents);
             $contents = str_replace("{Utilbar}", $utilbar, $contents);
+            $contents = str_replace("{audioplayer}", self::getAudioplayer($id, $interpret, $songtitel), $contents);
 
             $output .= $contents;
         }
@@ -78,6 +99,10 @@ class Main {
 
     static function getSongtext($songtext = "Wähle einen Song, um den Text anzuzeigen") {
         return str_replace("{text}", $songtext, file_get_contents("html/songtext.html"));
+    }
+
+    static function getUtilbar($id) {
+        return str_replace("{id}", $id, file_get_contents("html/utilbar.html"));
     }
 
 }

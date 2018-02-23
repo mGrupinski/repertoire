@@ -7,24 +7,29 @@
 }
 .tabelle headerFixed {
     position: fixed;
+    overflow-y: scroll;
 }
 #tabellenDiv {
     height: 500px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 .spalte1 {
     width: 25px !important;
 }
-
+.tablerow {
+    background-color: green;
+}
+.active {
+    background-color: yellowgreen !important;
+}
 .eingabefeld {
     resize: none;
 }
 
-.imagebutton, .delbutton {
-    width: 18px;
-    height: 18px;
+.imagebutton, .delbutton, .textbutton, .youtubebutton, .abspielbutton {
+    width: 16px;
+    height: 16px;
 }
-
 body {
-    background-color: green;
+   background-color: green;
 }

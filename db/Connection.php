@@ -2,8 +2,8 @@
 
 namespace repertoire\db;
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/netbeans/repertoire/utils/AbstractConnection.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/netbeans/repertoire/php/Song.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/netbeans/repertoire/utils/AbstractConnection.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/netbeans/repertoire/php/Song.php';
 
 use repertoire\php\Song;
 
@@ -72,4 +72,40 @@ class Connection extends AbstractConnection {
         }
     }
 
+    public function getSongtext($id) {
+        try {
+            $rs = $this->pdo->query("SELECT songtext FROM repertoire WHERE id=$id");
+            foreach($rs as $row) 
+            return $row['songtext'];
+        } catch (\Exception $ex) {
+            die($e->getMessage());
+        }
+    }
+    public function getInterpret($id) {
+        try {
+            $rs = $this->pdo->query("SELECT interpret FROM repertoire WHERE id=$id");
+            foreach($rs as $row) 
+            return $row['interpret'];
+        } catch (\Exception $ex) {
+            die($e->getMessage());
+        }
+    }
+    public function getSongtitel($id) {
+        try {
+            $rs = $this->pdo->query("SELECT titel FROM repertoire WHERE id=$id");
+            foreach($rs as $row) 
+            return $row['titel'];
+        } catch (\Exception $ex) {
+            die($e->getMessage());
+        }
+    }
+public function getYoutubelink($id) {
+        try {
+            $rs = $this->pdo->query("SELECT youtubelink FROM repertoire WHERE id=$id");
+            foreach($rs as $row) 
+            return $row['youtubelink'];
+        } catch (\Exception $ex) {
+            die($e->getMessage());
+        }
+    }
 }
