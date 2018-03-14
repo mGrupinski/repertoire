@@ -98,7 +98,7 @@ class Main {
         }
         $output = str_replace("{filteradded}", $outputAdded, $outputFrame);
         $output = str_replace("{filterall}", $outputAll, $output);
-
+        $output = str_replace("{anzahl}", count(\repertoire\php\Song::$songs), $output);
         return $output;
     }
 
@@ -121,12 +121,13 @@ class Main {
 
             $output .= $contents;
         }
+
         $output .= "</tbody></table></div>";
         return $output;
     }
 
     static function getEingabeformular() {
-        return str_replace("{anzahl}", count(\repertoire\php\Song::$songs), file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/netbeans/repertoire/html/eingabe.html'));
+        return file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/netbeans/repertoire/html/eingabe.html');
     }
 
     static function getSongtext($songtext = "Wähle einen Song, um den Text anzuzeigen") {

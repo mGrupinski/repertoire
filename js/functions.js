@@ -227,12 +227,16 @@ function filter() {
         var allflags = JSON.parse(output);
         if (!allflags[0]) {
             $("#Table_Songlist tr").show();
+            $("#statistik").html($("#Table_Songlist tr").length);
             return;
         }
-            
+        var iA = 0;
+        var iF = 0;    
         var filter = JSON.parse(allflags[0]);
         for (var id in allflags) {
-
+            if (id == 0) {
+                continue;
+            }
             var flagarray = JSON.parse(allflags[id]);
             var show = true;
             for (var index in filter) {
@@ -245,8 +249,11 @@ function filter() {
                 $("tr").filter(function () {
                     return $(this).attr('data-id') == id;
                 }).show();
+                iF++;
             }
+            iA++;
         }
+        $('#statistik').html(iF+"/"+iA);
     });
 
 }
