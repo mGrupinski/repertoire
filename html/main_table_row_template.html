@@ -1,12 +1,17 @@
-<tr class="tablerow">
+<tr class="tablerow" data-id='{id}'>
     <td class='spalte1' id=del{id}>
-
-                        <input class='delbutton'
-                               type='image' src='src/del.png' title='ID {id} löschen' data-id={id}
-                               />
-                    </td>
-                    <td class='interpret' id='interpret' title='Interpret'>{Interpret}</td>
-                    <td class='songtitel' id='songtitel' title='Songtitel'>{Songtitel}</td>
-                    <td class='status' id='status' title='Status'>{Statusbar}</td>
-                    <td class='utilbar' id='utilbar_header'>{Utilbar}{audioplayer}</td>
-    </tr>
+        <input class='delbutton imagebutton'
+               type='image' src='src/mülleimer.png' title='ID {id} löschen' data-id={id}
+               />
+    </td>
+    <td class='interpret' id='interpret{id}' title='Interpret'>{Interpret}</td>
+    <td class='songtitel' id='songtitel{id}' title='Songtitel'>{Songtitel}</td>
+    <td class='status' id='status{id}' title='Flags'>{Statusbar}</td>
+    <td class='utilbar' id='utilbar_header{id}'>{Utilbar}{audioplayer}
+        <div class='eingabe_linkDiv' id='eingabe_linkDiv{id}' style='display:none'>
+            <input type='text' class='eingabe_link' data-id='{id}'/>
+        
+        </div>
+    </td>
+    
+</tr>

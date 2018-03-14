@@ -7,7 +7,6 @@
 }
 .tabelle headerFixed {
     position: fixed;
-    overflow-y: scroll;
 }
 #tabellenDiv {
     height: 500px;
@@ -18,18 +17,39 @@
 }
 .tablerow {
     background-color: green;
+    line-height: 23.4px !important;
 }
 .active {
     background-color: yellowgreen !important;
 }
 .eingabefeld {
     resize: none;
+    
 }
+.utilbar {
 
-.imagebutton, .delbutton, .textbutton, .youtubebutton, .abspielbutton {
+}
+.imagebutton {
     width: 16px;
     height: 16px;
 }
 body {
-   background-color: green;
+    background-color: green;
+}
+#Songtext_Eingabe {
+    height: 500px;
+    width: 650px;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;         /* Opera/IE 8+ */
+
+}
+#Eingabe_Songtext {
+    height: 100%;
+    width: 100%;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;         /* Opera/IE 8+ */
+    resize: none;
+    
 }
