@@ -12,8 +12,14 @@ $(function () {
     initTablerowMark();
     initPlayButtons();
     initLinkSubmit();
+    initMissingFlagSettingsButton();
+    initMissingTextButton();
+    initMissingYoutubelinksButton();
+    initMissingMP3Button();
+    filter();
 
 });
+
 function initFlagButtons() {
     $(".statusbutton[data-a='added']").on('click', function () {
 
@@ -163,11 +169,13 @@ function bindUpbuttonToReturnToSonglist(divToHide, callback) {
     $('#eingabe').hide();
     $('#upbutton').unbind('click');
     $('#upbutton').on('click', function () {
-        $('#' + divToHide).slideUp(1000, function () {
+        $('#' + divToHide).slideUp(0, function () {
+            $('#Table_Songlist tr').show();
             $('#tabellenDiv').slideDown(1000);
             renameHeader();
             callback();
             bindUpbuttonToNewSong();
+            filter();
         });
 
     });
@@ -189,13 +197,13 @@ function del(delbutton) {
 }
 function renameHeader(id = - 1) {
     if (id == -1) {
-        $('#songtitel').html("Songtitel");
-        $('#interpret').html("Interpret");
+        $('#songtitel0').html("Songtitel");
+        $('#interpret0').html("Interpret");
         return;
     }
     $.post('db/getSongtitel.php', "id=" + id, function (info) {
-        $('#songtitel').html(info.split(" - ")[1]);
-        $('#interpret').html(info.split(" - ")[0]);
+        $('#songtitel0').html(info.split(" - ")[1]);
+        $('#interpret0').html(info.split(" - ")[0]);
 
     });
 }
@@ -226,12 +234,12 @@ function filter() {
     $.get('db/getAllFlags.php', function (output) {
         var allflags = JSON.parse(output);
         if (!allflags[0]) {
-            $("#Table_Songlist tr").show();
-            $("#statistik").html($("#Table_Songlist tr").length);
+            var l = $("#Table_Songlist tr").show().length;
+            $("#statistik").html(l);
             return;
         }
         var iA = 0;
-        var iF = 0;    
+        var iF = 0;
         var filter = JSON.parse(allflags[0]);
         for (var id in allflags) {
             if (id == 0) {
@@ -253,8 +261,92 @@ function filter() {
             }
             iA++;
         }
-        $('#statistik').html(iF+"/"+iA);
+        $('#statistik').html(iF + "/" + iA);
     });
 
+}
+function initMissingFlagSettingsButton() {
+    $('#missingFlags').on('click', function () {
+        $("#Table_Songlist tr").hide();
+        $.get('db/getMissingFlags.php', function (output) {
+            var missingIds = JSON.parse(output);
+            var iF = 0;
+            for (var index in missingIds) {
+                if (missingIds[index] == 0) {
+                    continue;
+                }
+                $("tr").filter(function () {
+                    return $(this).attr('data-id') == missingIds[index];
+                }).show();
+                iF++;
+            }
+            $('#statistik').html(iF);
+            bindUpbuttonToReturnToSonglist('tabellenDiv', function(){});
+        });
+
+    });
+}
+function initMissingTextButton() {
+    $('#missingText').on('click', function () {
+        $("#Table_Songlist tr").hide();
+        $.get('db/getMissingTexts.php', function (output) {
+            var missingIds = JSON.parse(output);
+            var iF = 0;
+            for (var index in missingIds) {
+                if (missingIds[index] == 0) {
+                    continue;
+                }
+                $("tr").filter(function () {
+                    return $(this).attr('data-id') == missingIds[index];
+                }).show();
+                iF++;
+            }
+            $('#statistik').html(iF);
+            bindUpbuttonToReturnToSonglist('tabellenDiv', function(){});
+        });
+
+    });
+}
+function initMissingYoutubelinksButton() {
+    $('#missingYoutubelink').on('click', function () {
+        $("#Table_Songlist tr").hide();
+        $.get('db/getMissingYoutubelinks.php', function (output) {
+            var missingIds = JSON.parse(output);
+            var iF = 0;
+            for (var index in missingIds) {
+                if (missingIds[index] == 0) {
+                    continue;
+                }
+                $("tr").filter(function () {
+                    return $(this).attr('data-id') == missingIds[index];
+                }).show();
+                iF++;
+            }
+            $('#statistik').html(iF);
+            bindUpbuttonToReturnToSonglist('tabellenDiv', function(){});
+        });
+
+    });
+}
+function initMissingMP3Button() {
+    $('#missingMP3').on('click', function () {
+        $("#Table_Songlist tr").hide();
+        $.get('db/getMissingMP3s.php', function (output) {
+            var missingIds = JSON.parse(output);
+            var iF = 0;
+            for (var index in missingIds) {
+                if (missingIds[index] == 0) {
+                    continue;
+                }
+                $("tr").filter(function () {
+                    return $(this).attr('data-id') == missingIds[index];
+                }).show();
+                iF++;
+            }
+            $('#statistik').html(iF);
+            bindUpbuttonToReturnToSonglist('tabellenDiv', function(){});
+        });
+
+    });
 }
 

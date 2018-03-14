@@ -1,19 +1,35 @@
+.tabelle {
+    table-layout: fixed;
+}
 .tabelle th, .tabelle td {
     border-style: solid;
     border-width: 1.5px;
-    width: 300px;
     text-align: center;
 
 }
 .tabelle headerFixed {
     position: fixed;
 }
+
 #tabellenDiv {
     height: 500px;
     overflow-y: auto;
 }
 .spalte1 {
     width: 25px !important;
+}
+.interpret {
+    width: 180px;
+
+}
+.songtitel {
+    width: 180px;
+}
+.status {
+    width: 135px;
+}
+.utilbar {
+    width: 93px;
 }
 .tablerow {
     background-color: green;
@@ -24,9 +40,6 @@
 }
 .eingabefeld {
     resize: none;
-    
-}
-.utilbar {
 
 }
 .imagebutton {
@@ -38,7 +51,7 @@ body {
 }
 #Songtext_Eingabe {
     height: 500px;
-    width: 650px;
+    width: 640px;
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
     -moz-box-sizing: border-box;    /* Firefox, other Gecko */
     box-sizing: border-box;         /* Opera/IE 8+ */
@@ -51,5 +64,5 @@ body {
     -moz-box-sizing: border-box;    /* Firefox, other Gecko */
     box-sizing: border-box;         /* Opera/IE 8+ */
     resize: none;
-    
+
 }

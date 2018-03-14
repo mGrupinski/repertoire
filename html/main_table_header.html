@@ -1,20 +1,43 @@
 <table id='headerFixed' class='tabelle'>
     <thead>
         <tr id="header">
-            <th class='spalte1' id='ID'><input id="upbutton" class="imagebutton" type="image" src="src/plus2.png" /></th>
-            <th class='interpret' id='interpret' title='Interpret'>Interpret</th>
-            <th class='songtitel' id='songtitel' title='Songtitel'>Songtitel</th>
-            <th class='status' id='status' title='Filter'>Filter
+            <th class='spalte1' id='ID0'><input id="upbutton" class="imagebutton" type="image" src="src/plus2.png" /></th>
+            <th class='interpret' id='interpret0' title='Interpret'>Interpret</th>
+            <th class='songtitel' id='songtitel0' title='Songtitel'>Songtitel</th>
+            <th class='status' id='status0' title='Filter'>Filter
                 <input class='imagebutton filterbutton'
                        type='image' src='src/plus2.png'
                        title='Filter einstellen'
                        />
                 <span id='statistik'>{anzahl}</span>
-                <div id='filter'>{filteradded}</div>
-                <div id='filter'>{filterall}</div>
+                <div id='filterAdded'>{filteradded}</div>
+                <div id='filterAll'>{filterall}</div>
             </th>
 
-            <th class='utilbar' id='utilbar_header'>Funktionen</th>
+            <th class='utilbar' id='utilbar_header'>Funktionen
+                <div id="searchMissing">
+                    <input class='imagebutton functionbutton'
+                           id='missingFlags'
+                       type='image' src='src/settings.png'
+                       title='Filter nicht eingestellt'
+                       />
+                    <input class='imagebutton functionbutton'
+                           id='missingText'
+                       type='image' src='src/text.png'
+                       title='kein Text hinterlegt'
+                       />
+                    <input class='imagebutton functionbutton'
+                           id='missingYoutubelink'
+                       type='image' src='src/youtube.png'
+                       title='Youtubelink nicht hinterlegt'
+                       />
+                    <input class='imagebutton functionbutton'
+                           id='missingMP3'
+                       type='image' src='src/kopfhörer.png'
+                       title='keine MP3 hinterlegt'
+                       />
+                </div>
+            </th>
         </tr>
     </thead>
 </table>

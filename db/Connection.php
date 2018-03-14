@@ -169,4 +169,76 @@ class Connection extends AbstractConnection {
         }
     }
 
+    public function getMissingFlags() {
+        try {
+            $a = array();
+            $rs = $this->pdo->query(
+                    "SELECT id
+                        FROM repertoire
+                        WHERE id NOT IN
+                            (SELECT id
+                                 FROM songhatflag)");
+            foreach ($rs as $row) {
+                $a[] = $row['id'];
+            }
+            return $a;
+        } catch (\Exception $ex) {
+            die($ex->getMessage());
+        }
+    }
+
+    public function getMissingTexts() {
+        try {
+            $a = array();
+            $rs = $this->pdo->query(
+                    "SELECT id, songtext
+                        FROM repertoire
+                        WHERE songtext IS NULL OR songtext=''");
+            foreach ($rs as $row) {
+                $a[] = $row['id'];
+            }
+            return $a;
+        } catch (\Exception $ex) {
+            die($ex->getMessage());
+        }
+    }
+
+    public function getMissingYoutubeLinks() {
+        try {
+            $a = array();
+            $rs = $this->pdo->query(
+                    "SELECT id, youtubelink
+                        FROM repertoire
+                        WHERE youtubelink IS NULL OR youtubelink=''");
+            foreach ($rs as $row) {
+                $a[] = $row['id'];
+            }
+            return $a;
+        } catch (\Exception $ex) {
+            die($ex->getMessage());
+        }
+    }
+
+    public function getMissingMP3s() {
+        try {
+            $a = array();
+            $rs = $this->pdo->query(
+                    "SELECT id, interpret, titel FROM repertoire");
+            foreach ($rs as $row) {
+                $filename = $_SERVER['DOCUMENT_ROOT'] . '/netbeans/repertoire/src/mp3/'
+                        .$row['interpret']
+                        ." - "
+                        .$row['titel']
+                        .".mp3";
+                if (!file_exists($filename)) {
+                    $a[] = $row['id'];
+                }
+                
+            }
+            return $a;
+        } catch (\Exception $ex) {
+            die($ex->getMessage());
+        }
+    }
+
 }
