@@ -170,6 +170,7 @@ function bindUpbuttonToReturnToSonglist(divToHide, callback) {
     $('#upbutton').unbind('click');
     $('#upbutton').on('click', function () {
         $('#' + divToHide).slideUp(0, function () {
+            removeFilter();
             $('#Table_Songlist tr').show();
             $('#tabellenDiv').slideDown(1000);
             renameHeader();
@@ -235,10 +236,9 @@ function filter() {
         var allflags = JSON.parse(output);
         if (!allflags[0]) {
             var l = $("#Table_Songlist tr").show().length;
-            $("#statistik").html(l);
+            $("#statistik").html(l + "/" + l);
             return;
         }
-        var iA = 0;
         var iF = 0;
         var filter = JSON.parse(allflags[0]);
         for (var id in allflags) {
@@ -259,9 +259,11 @@ function filter() {
                 }).show();
                 iF++;
             }
-            iA++;
+            
         }
-        $('#statistik').html(iF + "/" + iA);
+        $('#statistik').html(iF + "/" + getSongcount());
+        bindUpbuttonToReturnToSonglist('tabellenDiv', function(){});
+        
     });
 
 }
@@ -280,7 +282,7 @@ function initMissingFlagSettingsButton() {
                 }).show();
                 iF++;
             }
-            $('#statistik').html(iF);
+            $('#statistik').html(iF + "/" + getSongcount());
             bindUpbuttonToReturnToSonglist('tabellenDiv', function(){});
         });
 
@@ -301,7 +303,7 @@ function initMissingTextButton() {
                 }).show();
                 iF++;
             }
-            $('#statistik').html(iF);
+            $('#statistik').html(iF + "/" + getSongcount());
             bindUpbuttonToReturnToSonglist('tabellenDiv', function(){});
         });
 
@@ -322,7 +324,7 @@ function initMissingYoutubelinksButton() {
                 }).show();
                 iF++;
             }
-            $('#statistik').html(iF);
+            $('#statistik').html(iF + "/" + getSongcount());
             bindUpbuttonToReturnToSonglist('tabellenDiv', function(){});
         });
 
@@ -343,10 +345,20 @@ function initMissingMP3Button() {
                 }).show();
                 iF++;
             }
-            $('#statistik').html(iF);
+            $('#statistik').html(iF + "/" + getSongcount());
             bindUpbuttonToReturnToSonglist('tabellenDiv', function(){});
         });
 
     });
+}
+function removeFilter() {
+    $.post('db/removeFilter.php', null, function() {
+        $(".statusbutton[data-a='filteradded']").hide();
+        $(".statusbutton[data-a='filterall']").hide();
+    });
+    
+}
+function getSongcount() {
+    return $("#Table_Songlist tr").length;
 }
 

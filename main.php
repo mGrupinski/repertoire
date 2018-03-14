@@ -98,7 +98,8 @@ class Main {
         }
         $output = str_replace("{filteradded}", $outputAdded, $outputFrame);
         $output = str_replace("{filterall}", $outputAll, $output);
-        $output = str_replace("{anzahl}", count(\repertoire\php\Song::$songs), $output);
+        $anzahl = count(\repertoire\php\Song::$songs);
+        $output = str_replace("{anzahl}", "$anzahl/$anzahl", $output);
         return $output;
     }
 

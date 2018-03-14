@@ -173,11 +173,11 @@ class Connection extends AbstractConnection {
         try {
             $a = array();
             $rs = $this->pdo->query(
-                    "SELECT id
+                    "SELECT id, flag_geloescht 
                         FROM repertoire
                         WHERE id NOT IN
                             (SELECT id
-                                 FROM songhatflag)");
+                                 FROM songhatflag) AND flag_geloescht=0");
             foreach ($rs as $row) {
                 $a[] = $row['id'];
             }
@@ -191,9 +191,9 @@ class Connection extends AbstractConnection {
         try {
             $a = array();
             $rs = $this->pdo->query(
-                    "SELECT id, songtext
+                    "SELECT id, songtext, flag_geloescht 
                         FROM repertoire
-                        WHERE songtext IS NULL OR songtext=''");
+                        WHERE songtext IS NULL OR songtext='' AND flag_geloescht=0");
             foreach ($rs as $row) {
                 $a[] = $row['id'];
             }
@@ -207,9 +207,9 @@ class Connection extends AbstractConnection {
         try {
             $a = array();
             $rs = $this->pdo->query(
-                    "SELECT id, youtubelink
+                    "SELECT id, youtubelink, flag_geloescht 
                         FROM repertoire
-                        WHERE youtubelink IS NULL OR youtubelink=''");
+                        WHERE youtubelink IS NULL OR youtubelink='' AND flag_geloescht=0");
             foreach ($rs as $row) {
                 $a[] = $row['id'];
             }
@@ -223,20 +223,27 @@ class Connection extends AbstractConnection {
         try {
             $a = array();
             $rs = $this->pdo->query(
-                    "SELECT id, interpret, titel FROM repertoire");
+                    "SELECT id, interpret, titel, flag_geloescht FROM repertoire WHERE flag_geloescht=0");
             foreach ($rs as $row) {
                 $filename = $_SERVER['DOCUMENT_ROOT'] . '/netbeans/repertoire/src/mp3/'
-                        .$row['interpret']
-                        ." - "
-                        .$row['titel']
-                        .".mp3";
+                        . $row['interpret']
+                        . " - "
+                        . $row['titel']
+                        . ".mp3";
                 if (!file_exists($filename)) {
                     $a[] = $row['id'];
                 }
-                
             }
             return $a;
         } catch (\Exception $ex) {
+            die($ex->getMessage());
+        }
+    }
+
+    public function removeFilter() {
+        try {
+            $this->pdo->exec("DELETE FROM songhatflag WHERE id=0");
+        } catch (Exception $ex) {
             die($ex->getMessage());
         }
     }
