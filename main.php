@@ -35,10 +35,13 @@ class Main {
                 self::getTableContent() .
                 self::getSongtext() .
                 self::getSongtext_Eingabe() .
+                self::getPDFViewer() .
                 "</body>" .
                 "</html>";
     }
-
+    static function getPDFViewer() {
+        return "<div id='pdfViewer' style='display:none'></div>";
+    }
     static function getYoutubeplayerDiv() {
         return "<div id='youtubeplayerDiv' style='display:none'></div>";
     }
@@ -132,7 +135,8 @@ class Main {
     }
 
     static function getSongtext($songtext = "Wähle einen Song, um den Text anzuzeigen") {
-        return str_replace("{text}", $songtext, file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/netbeans/repertoire/html/songtext.html'));
+        return str_replace("{text}", $songtext, 
+                "<p id='songtext' align='center' style='display:none'>{text}</p>");
     }
 
     static function getUtilbar($id) {
@@ -140,7 +144,8 @@ class Main {
     }
 
     static function getStatusbar($id) {
-        $outputFrame = '<div id = "addedFlags">{added}</div><div id = "allFlags">{all}</div>';
+        $outputFrame = 
+                '<div id = "addedFlags">{added}</div><div id = "allFlags">{all}</div>';
         $outputAdded = "";
         $outputAll = "";
         $output = "";

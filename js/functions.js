@@ -8,6 +8,7 @@ $(function () {
     bindUpbuttonToNewSong();
     initDelButtons();
     initTextButtons();
+    initTextEditButtons();
     initYoutubeButtons();
     initTablerowMark();
     initPlayButtons();
@@ -16,10 +17,76 @@ $(function () {
     initMissingTextButton();
     initMissingYoutubelinksButton();
     initMissingMP3Button();
+    initInlineEdit();
+    initPDFButtons();
     filter();
 
 });
+function initPDFButtons() {
+    $('.pdfbutton').on('click', function () {
+        //zeile farbig als aktiv markieren
+        mark($(this).parent().parent().parent());
+        var id = $(this).attr('data-id');
 
+        $.post('db/getSongtitel.php', "id=" + id, function (info) {
+
+
+            var url = "src/pdf/" + info + ".pdf?&toolbar=0&navpanes=0";
+            $.get(url)
+                    .done(function () {
+                        $('#pdfViewer').html("<embed src='" + url + "' width='650' height='500' type='application/pdf'>");
+                        $('#tabellenDiv').slideUp(1000, function () {
+                            renameHeader(id);
+                            $('#pdfViewer').show(1000);
+                            bindUpbuttonToReturnToSonglist('pdfViewer');
+                        });
+                    }).fail(function () {
+
+            });
+
+
+        });
+        ;
+    });
+}
+function initInlineEdit() {
+    $('.editable').each(function () {
+        var that = this;
+        bindToSecondClick(this, function () {
+            changeToInput(that);
+            
+        });
+
+    });
+
+}
+function bindToSecondClick(current, f = function() {}) {
+    $(current).unbind('click');
+    $(current).one('click', function () {
+        $(current).on('click', function() {
+            f();
+            bindToSecondClick(this, f());
+        });
+    });
+}
+
+function changeToInput(currentEle) {
+    var value = currentEle.val();
+
+    $(currentEle).html('<input class="thVal" maxlength="255" type="text" width="2" value="' + value + '" />');
+    $(".thVal", currentEle).focus().keyup(function (event) {
+        if (event.keyCode == 13) {
+            var v = $(".thVal").val().trim();
+            $(currentEle).html(v);
+            bindToSecondClick(currentEle, changeToInput(currentEle, v));
+
+        }
+    }).click(function (e) {
+        e.stopPropagation();
+    });
+
+
+}
 function initFlagButtons() {
     $(".statusbutton[data-a='added']").on('click', function () {
 
@@ -32,7 +99,6 @@ function initTextButtons() {
         //songid holen
         var id = $(this).attr('data-id');
         //tabelle verstecken
-        //$('.tablerow:not(.active)').slideToggle(1000, function () {
         $('#tabellenDiv').slideToggle(1000, function () {
 //song aus der datenbank holen
             $.post('db/getSongtext.php', "id=" + id, function (songtext) {
@@ -50,7 +116,34 @@ function initTextButtons() {
                 $('#songtext').hide();
                 $('#songtext').html(songtext);
                 $('#songtext').slideDown(1000);
-                bindUpbuttonToReturnToSonglist('songtext', function () {});
+                bindUpbuttonToReturnToSonglist('songtext');
+                return false;
+            });
+        });
+        return false;
+    });
+
+}
+function initTextEditButtons() {
+    $('.texteditbutton').on('click', function () {
+//zeile farbig als aktiv markieren
+        mark($(this).parent().parent().parent());
+        //songid holen
+        var id = $(this).attr('data-id');
+        //tabelle verstecken
+        $('#tabellenDiv').slideToggle(1000, function () {
+//song aus der datenbank holen
+            $.post('db/getSongtext.php', "id=" + id, function (songtext) {
+                renameHeader(id);
+                $('#Songtext_Eingabe').hide();
+                $('#Eingabe_Songtext').val(songtext);
+                $('#Songtext_Eingabe').slideDown(1000);
+                bindUpbuttonToReturnToSonglist('Songtext_Eingabe', function () {
+                    songtext = $('#Eingabe_Songtext').val();
+                    $.post("db/setSongtext.php", {"text": songtext, "id": id}, function (data) {
+                        $('#Eingabe_Songtext').val("");
+                    });
+                });
                 return false;
             });
         });
@@ -74,7 +167,7 @@ function initYoutubeButtons() {
                     renameHeader(id);
                     youtubeplayer = youtubeplayer.replace("{youtubelink}", link);
                     $('#youtubeplayerDiv').html(youtubeplayer).fadeIn();
-                    bindUpbuttonToReturnToSonglist('youtubeplayerDiv', function () {});
+                    bindUpbuttonToReturnToSonglist('youtubeplayerDiv');
                 });
                 return false;
             });
@@ -102,23 +195,27 @@ function initTablerowMark() {
 }
 function initPlayButtons() {
     $('.abspielbutton').on('click', function () {
-        //zeile farbig als aktiv markieren
         mark($(this).parent().parent().parent());
         var id = $(this).attr('data-id');
-        if ($('#abspielen' + id).get(0).paused) {
-            $('#abspielen' + id).get(0).play();
-        } else {
-            $('#abspielen' + id).get(0).pause();
-        }
+        $.post('db/getSongtitel.php', "id=" + id, function (info) {
+            var url = "src/mp3/" + info + ".mp3";
+            $.get(url).done(function () {
+                if ($('#abspielen' + id).get(0).paused) {
+                    $('#abspielen' + id).get(0).play();
+                } else {
+                    $('#abspielen' + id).get(0).pause();
+                }
+            }).fail(function () {
+                return false;
+            });
+        });
     });
-
 }
 
 function initDelButtons() {
     $('.delbutton').on('click', function () {
         del(this);
     });
-
 }
 function initFlagtoggle() {
     $(".statusbutton[data-a='all']").on('click', function () {
@@ -163,9 +260,8 @@ function initNewSongSubmit() {
         });
         return false;
     });
-
 }
-function bindUpbuttonToReturnToSonglist(divToHide, callback) {
+function bindUpbuttonToReturnToSonglist(divToHide, callback = function() {}) {
     $('#eingabe').hide();
     $('#upbutton').unbind('click');
     $('#upbutton').on('click', function () {
@@ -178,7 +274,6 @@ function bindUpbuttonToReturnToSonglist(divToHide, callback) {
             bindUpbuttonToNewSong();
             filter();
         });
-
     });
 }
 function bindUpbuttonToNewSong() {
@@ -186,14 +281,13 @@ function bindUpbuttonToNewSong() {
     $('#upbutton').on('click', function () {
         $('#eingabe').slideToggle(1000);
     });
-
 }
 function del(delbutton) {
     var id = $(delbutton).attr('data-id');
     var rowid = delbutton.parentNode.parentNode.rowIndex;
     document.getElementById("Table_Songlist").deleteRow(rowid);
     $.post('db/del.php', "id=" + id, function (info) {
-        $('#songtext').html(info);
+
     });
 }
 function renameHeader(id = - 1) {
@@ -205,7 +299,6 @@ function renameHeader(id = - 1) {
     $.post('db/getSongtitel.php', "id=" + id, function (info) {
         $('#songtitel0').html(info.split(" - ")[1]);
         $('#interpret0').html(info.split(" - ")[0]);
-
     });
 }
 function mark(row) {
@@ -216,7 +309,6 @@ function initFiltersettingButton() {
     $(".filterbutton").on('click', function () {
         $(".statusbutton[data-a='filterall']").toggle();
     });
-
 }
 function initFilterButton() {
     $(".statusbutton[data-a='filterall']").on('click', function () {
@@ -224,10 +316,8 @@ function initFilterButton() {
         $.post('db/toggleFlag.php', {"type": type, "id": 0}, function () {
             $('.' + type + "button0[data-a='filteradded']").toggle();
             filter();
-
         });
     });
-
 }
 
 function filter() {
@@ -259,13 +349,11 @@ function filter() {
                 }).show();
                 iF++;
             }
-            
+
         }
         $('#statistik').html(iF + "/" + getSongcount());
-        bindUpbuttonToReturnToSonglist('tabellenDiv', function(){});
-        
+        bindUpbuttonToReturnToSonglist('tabellenDiv', function () {});
     });
-
 }
 function initMissingFlagSettingsButton() {
     $('#missingFlags').on('click', function () {
@@ -283,9 +371,8 @@ function initMissingFlagSettingsButton() {
                 iF++;
             }
             $('#statistik').html(iF + "/" + getSongcount());
-            bindUpbuttonToReturnToSonglist('tabellenDiv', function(){});
+            bindUpbuttonToReturnToSonglist('tabellenDiv', function () {});
         });
-
     });
 }
 function initMissingTextButton() {
@@ -304,9 +391,8 @@ function initMissingTextButton() {
                 iF++;
             }
             $('#statistik').html(iF + "/" + getSongcount());
-            bindUpbuttonToReturnToSonglist('tabellenDiv', function(){});
+            bindUpbuttonToReturnToSonglist('tabellenDiv', function () {});
         });
-
     });
 }
 function initMissingYoutubelinksButton() {
@@ -325,9 +411,8 @@ function initMissingYoutubelinksButton() {
                 iF++;
             }
             $('#statistik').html(iF + "/" + getSongcount());
-            bindUpbuttonToReturnToSonglist('tabellenDiv', function(){});
+            bindUpbuttonToReturnToSonglist('tabellenDiv', function () {});
         });
-
     });
 }
 function initMissingMP3Button() {
@@ -346,17 +431,15 @@ function initMissingMP3Button() {
                 iF++;
             }
             $('#statistik').html(iF + "/" + getSongcount());
-            bindUpbuttonToReturnToSonglist('tabellenDiv', function(){});
+            bindUpbuttonToReturnToSonglist('tabellenDiv', function () {});
         });
-
     });
 }
 function removeFilter() {
-    $.post('db/removeFilter.php', null, function() {
+    $.post('db/removeFilter.php', null, function () {
         $(".statusbutton[data-a='filteradded']").hide();
         $(".statusbutton[data-a='filterall']").hide();
     });
-    
 }
 function getSongcount() {
     return $("#Table_Songlist tr").length;
